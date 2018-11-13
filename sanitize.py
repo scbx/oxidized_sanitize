@@ -12,13 +12,13 @@ expression = "(\<a href=\'\/node\/fetch\/)([\w\.-]+)(\' title=\'configuration\'>
 
 
 def get_device_url(web_url):
-    #gets the main page of oxidized with all the devices listed
+    #gets the main web page an returns the webpage as text
     r = requests.get(web_url)
     return r.text
 
 
 def parse_device_names(web_page, expression):
-    #parses the main page and extracts the devices hostnames
+    #parses the main page and extracts the devices hostnames from expression
     device_list = []
     web_page = web_page.split('\n')
     for i in web_page:
@@ -29,13 +29,13 @@ def parse_device_names(web_page, expression):
 
 
 def get_device_configs(web_url, api_path, device):
-    #grab device configuration from web portal and return as text
+    #combine device name and api_path to get device configuration
     r = requests.get(web_url+api_path+device)
     yield r.text
 
 
 def sanitize_device_configs(entry):
-    #remove unwanted config from device configuration
+    #remove unwanted configuration from device configuration
     entry = entry.rsplit('\n')
     for line in entry:
         line = re.sub(r'^\s?(radius-server\shost|server-private)\s([\d\.]+)(.*)', r'\1 <omitted radius> \3', line)
@@ -56,7 +56,7 @@ def sanitize_device_configs(entry):
 
 
 def write_device_configs(file_path, device_name, config):
-    #write device configuration into a file
+    #write sanitized device configuration to directory
     with open(file_path+device_name, 'wt') as f:
         for e in config:
             f.write(e+'\n')
