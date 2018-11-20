@@ -58,7 +58,9 @@ def sanitize_device_configs(entry):
 def write_device_configs(file_path, device_name, config):
     #write sanitized device configuration to directory
     with open(file_path+device_name, 'wt') as f:
+	#iterate over configuration lines
         for e in config:
+	    #write and append newline for returns
             f.write(e+'\n')
 
 
